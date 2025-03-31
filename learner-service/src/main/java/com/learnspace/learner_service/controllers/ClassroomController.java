@@ -16,7 +16,7 @@ public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
 
-    @PostMapping("/join/{classroomId}")
+    @PostMapping("/join-classroom/{classroomId}")
     public ResponseEntity<String> joinClassroom(@PathVariable Long classroomId, HttpSession session) {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId"); // Retrieve from session
         if (learnerUniqueId == null) {
@@ -34,7 +34,7 @@ public class ClassroomController {
         return ResponseEntity.ok(classroomService.getLearnerClassrooms(learnerUniqueId));
     }
 
-    @GetMapping("/{classroomId}")
+    @GetMapping("/classrooms/{classroomId}")
     public ResponseEntity<Classroom> getClassroom(@PathVariable Long classroomId, HttpSession session) {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId"); // Retrieve from session
         if (learnerUniqueId == null) {

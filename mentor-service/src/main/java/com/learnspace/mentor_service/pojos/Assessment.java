@@ -25,14 +25,17 @@ public class Assessment {
     private Date createdAt;
     private boolean isActive;
 
+    // Many assessments belong to one user (Learner/Mentor)
     @ManyToOne
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "created_by", nullable = false)
     private User createdBy; // ✅ Created by a mentor
 
-    @ManyToOne
-    @JoinColumn(name = "learner_id")
-    private User learner; // ✅ Attempted by a learner
-
-    @OneToMany(mappedBy = "assessment")
+    // An assessment contains multiple questions
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 }
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "learner_id", referencedColumnName = "userId", nullable = true)
+//    private User learner;

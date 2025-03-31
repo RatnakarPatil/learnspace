@@ -18,11 +18,13 @@ public class Classroom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // ✅ Added missing @Id
     private Long classroomId;
 
+    @Column(unique = true, nullable = false, length = 6)
     private String classroomName;
+
     private String classroomCode;
 
     @ManyToOne
-    @JoinColumn(name = "mentor_id")
+    @JoinColumn(name = "mentor_id", nullable = false)
     private User mentor;
 
     @ManyToMany

@@ -22,7 +22,7 @@ public class Assessment {
     private String assessmentTitle;
     private int totalMarks;
     private int passingMarks;
-    private int durationMinutes;
+    private int duration;
     private Date createdAt;
     private boolean isActive;
 

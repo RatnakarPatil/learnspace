@@ -10,6 +10,11 @@ public class MentorService {
     @Autowired
     private UserRepo ur;
 
+    public long getUserId(String email) {
+        User user = ur.findByEmail(email);
+        return (user != null) ? user.getUserId() : -1;
+    }
+
     public boolean signup(User user) {
         if (ur.findByEmail(user.getEmail()) != null) {
             return false; // Email already exists

@@ -1,5 +1,6 @@
 package com.learnspace.mentor_service.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,19 +35,21 @@ public class User {
     }
 
     // Mentor-specific relationships
-    @OneToMany(mappedBy = "mentor")
+    @JsonIgnore
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL)
     private List<Classroom> classrooms;  // Mentor can create multiple classrooms
 
-    @OneToMany(mappedBy = "uploadedBy")
+    @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
     private List<File> uploadedFiles; // Mentor uploads files
 
-    @OneToMany(mappedBy = "createdBy")  // Fixed mapping
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)  // Fixed mapping
     private List<Assessment> createdAssessments; // Mentor creates assessments
-
-    // Learner-specific relationships
-    @ManyToMany(mappedBy = "learners")
-    private List<Classroom> joinedClassrooms; // Learner can join multiple classrooms
-
-    @OneToMany(mappedBy = "learner")
-    private List<Assessment> attemptedAssessments; // Learner attempts assessments
 }
+
+
+//    // Learner-specific relationships
+//    @ManyToMany(mappedBy = "learners", cascade = CascadeType.ALL)
+//    private List<Classroom> joinedClassrooms; // Learner can join multiple classrooms
+//
+//    @OneToMany(mappedBy = "learner", cascade = CascadeType.ALL)
+//    private List<Assessment> attemptedAssessments; // Learner attempts assessments
