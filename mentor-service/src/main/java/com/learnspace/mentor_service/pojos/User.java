@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,22 +35,12 @@ public class User {
         LEARNER, MENTOR
     }
 
-    // Mentor-specific relationships
-    @JsonIgnore
     @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL)
-    private List<Classroom> classrooms;  // Mentor can create multiple classrooms
+    private List<Classroom>  createdClassrooms;
 
     @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL)
     private List<File> uploadedFiles; // Mentor uploads files
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)  // Fixed mapping
-    private List<Assessment> createdAssessments; // Mentor creates assessments
+    private List<Assessment> createdAssessments;// Mentor creates assessments
 }
-
-
-//    // Learner-specific relationships
-//    @ManyToMany(mappedBy = "learners", cascade = CascadeType.ALL)
-//    private List<Classroom> joinedClassrooms; // Learner can join multiple classrooms
-//
-//    @OneToMany(mappedBy = "learner", cascade = CascadeType.ALL)
-//    private List<Assessment> attemptedAssessments; // Learner attempts assessments

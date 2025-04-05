@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "classrooms")
 public class Classroom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long classroomId;
@@ -20,18 +22,9 @@ public class Classroom {
     private String classroomName;
     private String classroomCode;
 
-    @ManyToOne
-    @JoinColumn(name = "mentor_id")
-    private User mentor;  // Only Mentors can create classrooms
+    @ManyToMany(mappedBy = "classrooms")
+    private List<User> learners = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "classroom_learners",
-            joinColumns = @JoinColumn(name = "classroom_id"),
-            inverseJoinColumns = @JoinColumn(name = "learner_id")
-    )
-    private List<User> learners;  // Learners who have joined the classroom
-
-    @OneToMany(mappedBy = "classroom")
-    private List<File> files;  // Files associated with this classroom
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<File> files = new ArrayList<>();
 }

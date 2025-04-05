@@ -26,8 +26,8 @@ public class ClassroomController {
         return ResponseEntity.ok(classroomDTO);
     }
 
-    @GetMapping("/my-classrooms")
-    public ResponseEntity<List<Classroom>> getClassrooms(HttpSession session) {
+    @GetMapping("/myClassrooms")
+    public ResponseEntity<List<ClassroomDTO>> getClassrooms(HttpSession session) {
         Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
         if (mentorUniqueId == null) {
             return ResponseEntity.status(401).body(null);
@@ -36,7 +36,7 @@ public class ClassroomController {
     }
 
     @GetMapping("/classrooms/{classroomId}")
-    public ResponseEntity<Classroom> getClassroom(@PathVariable Long classroomId, HttpSession session) {
+    public ResponseEntity<ClassroomDTO> getClassroom(@PathVariable Long classroomId, HttpSession session) {
         Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
         if (mentorUniqueId == null) {
             return ResponseEntity.status(401).body(null);
@@ -44,24 +44,3 @@ public class ClassroomController {
         return ResponseEntity.ok(classroomService.getSpecifiedClassroom(mentorUniqueId, classroomId));
     }
 }
-
-
-//@GetMapping("/my-classrooms")
-//public ResponseEntity<List<ClassroomDTO>> getClassrooms(HttpSession session) {
-//    Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
-//    if (mentorUniqueId == null) {
-//        return ResponseEntity.status(401).body(null);
-//    }
-//    List<ClassroomDTO> listClassroomDTO = classroomService.getMentorClassrooms(mentorUniqueId); // Use DTO
-//    return ResponseEntity.ok(listClassroomDTO);
-//}
-//
-//@GetMapping("/classrooms/{classroomId}")
-//public ResponseEntity<ClassroomDTO> getClassroom(@PathVariable Long classroomId, HttpSession session) {
-//    Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
-//    if (mentorUniqueId == null) {
-//        return ResponseEntity.status(401).body(null);
-//    }
-//    ClassroomDTO classroomDTO = classroomService.getSpecifiedClassroom(mentorUniqueId, classroomId); // Use DTO
-//    return ResponseEntity.ok(classroomDTO);
-//}

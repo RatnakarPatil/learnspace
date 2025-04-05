@@ -14,14 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "assessments")
 public class Assessment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long assessmentId;
 
     private String assessmentTitle;
-    private int totalMarks;
-    private int passingMarks;
-    private int duration;
     private Date createdAt;
     private boolean isActive;
 

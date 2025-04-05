@@ -24,13 +24,12 @@ public class Question {
     private String option3;
     private String option4;
     private String correctOption;
-    private int marks;
-    private String createdBy;
-    private Date createdAt;
-    private String questionDifficulty;
-    private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "assessment_id")
     private Assessment assessment;  // Question belongs to an assessment
+
+    @ManyToOne  // ✅ Changed from `createdBy` as String to reference `User`
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 }

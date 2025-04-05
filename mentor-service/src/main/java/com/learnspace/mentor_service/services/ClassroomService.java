@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClassroomService {
@@ -23,7 +24,6 @@ public class ClassroomService {
     private static final String CODE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    // Generate a unique 6-character alphanumeric classroom code
     private String generateUniqueClassroomCode() {
         String code;
         do {
@@ -50,37 +50,35 @@ public class ClassroomService {
         classroom.setMentor(mentor);
 
         Classroom savedClassroom = classroomRepo.save(classroom);
-
-        // Convert entity to DTO before returning
         return new ClassroomDTO(savedClassroom);
     }
 
-    public List<Classroom> getMentorClassrooms(Long mentorId) {
-        return classroomRepo.findByMentorUserId(mentorId);
+    public List<ClassroomDTO> getMentorClassrooms(Long mentorId) {
+        return classroomRepo.findByMentorUserId(mentorId)
+                .stream()
+                .map(classroom -> {
+                    ClassroomDTO dto = new ClassroomDTO(classroom);
+                    List<String> learnerEmails = userRepo.findLearnersEmailsByClassroomId(classroom.getClassroomId());
+                    dto.setLearnerEmails(learnerEmails);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
-    public Classroom getSpecifiedClassroom(Long learnerId, Long classroomId) {
-        User mentor = userRepo.findById(learnerId).orElseThrow(() -> new RuntimeException("Mentor not found"));
-        Classroom classroom = classroomRepo.findById(classroomId).orElseThrow(() -> new RuntimeException("Classroom not found"));
-        if (mentor.getClassrooms().contains(classroom)) {
-            return classroom;
-        } else {
+    public ClassroomDTO getSpecifiedClassroom(Long mentorId, Long classroomId) {
+        User mentor = userRepo.findById(mentorId)
+                .orElseThrow(() -> new RuntimeException("Mentor not found"));
+
+        Classroom classroom = classroomRepo.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        if (!mentor.getCreatedClassrooms().contains(classroom)) {
             throw new RuntimeException("Mentor is not part of this classroom");
         }
+
+        ClassroomDTO dto = new ClassroomDTO(classroom);
+        List<String> learnerEmails = userRepo.findLearnersEmailsByClassroomId(classroomId);
+        dto.setLearnerEmails(learnerEmails);
+        return dto;
     }
 }
-
-
-//public List<ClassroomDTO> getMentorClassrooms(Long mentorId) {
-//    return classroomRepo.findByMentorUserId(mentorId);
-//}
-//
-//public ClassroomDTO getSpecifiedClassroom(Long learnerId, Long classroomId) {
-//    User mentor = userRepo.findById(learnerId).orElseThrow(() -> new RuntimeException("Mentor not found"));
-//    Classroom classroom = classroomRepo.findById(classroomId).orElseThrow(() -> new RuntimeException("Classroom not found"));
-//    if (mentor.getClassrooms().contains(classroom)) {
-//        return new ClassroomDTO(classroom);
-//    } else {
-//        throw new RuntimeException("Mentor is not part of this classroom");
-//    }
-//}

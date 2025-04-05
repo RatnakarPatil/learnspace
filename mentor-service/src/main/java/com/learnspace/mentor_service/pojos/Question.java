@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "questions")
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
@@ -23,10 +24,6 @@ public class Question {
     private String option3;
     private String option4;
     private String correctOption;
-    private int marks;
-    private Date createdAt;
-    private String questionDifficulty;
-    private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "assessment_id")

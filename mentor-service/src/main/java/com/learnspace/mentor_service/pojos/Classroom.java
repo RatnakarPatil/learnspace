@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,23 +16,16 @@ import java.util.List;
 public class Classroom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ✅ Added missing @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long classroomId;
 
-    @Column(unique = true, nullable = false, length = 6)
     private String classroomName;
-
     private String classroomCode;
 
     @ManyToOne
-    @JoinColumn(name = "mentor_id", nullable = false)
+    @JoinColumn(name = "mentor_id")
     private User mentor;
 
-    @ManyToMany
-    @JoinTable(
-            name = "classroom_users",
-            joinColumns = @JoinColumn(name = "classroom_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> learners;
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<File> files = new ArrayList<>();
 }

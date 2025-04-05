@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,15 +33,15 @@ public class User {
         LEARNER, MENTOR
     }
 
-    // Many learners can be part of many classrooms
-    @ManyToMany(mappedBy = "learners")
-    private List<Classroom> classrooms;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(
+            name = "classroom_learners",
+            joinColumns = @JoinColumn(name = "learner_id"),
+            inverseJoinColumns = @JoinColumn(name = "classroom_id")
+    )
+    private List<Classroom> classrooms = new ArrayList<>();
 
     // A user (learner/mentor) can create multiple assessments
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Assessment> assessments;
-
-    // A user (learner/mentor) can upload multiple files
-    @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> uploadedFiles;
+    private List<Assessment> assessments = new ArrayList<>();
 }
