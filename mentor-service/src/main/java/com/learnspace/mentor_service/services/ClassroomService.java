@@ -81,4 +81,25 @@ public class ClassroomService {
         dto.setLearnerEmails(learnerEmails);
         return dto;
     }
+
+    public void deleteClassroom(Long mentorId, Long classroomId) {
+        Classroom classroom = classroomRepo.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+        if (!classroom.getMentor().getUserId().equals(mentorId)) {
+            throw new RuntimeException("Unauthorized: This classroom doesn't belong to this mentor.");
+        }
+        classroomRepo.delete(classroom);
+    }
+
+    public ClassroomDTO updateClassroom(Long mentorId, Long classroomId, String newName) {
+        Classroom classroom = classroomRepo.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        if (!classroom.getMentor().getUserId().equals(mentorId)) {
+            throw new RuntimeException("Unauthorized update attempt");
+        }
+
+        classroom.setClassroomName(newName);
+        return new ClassroomDTO(classroomRepo.save(classroom));
+    }
 }

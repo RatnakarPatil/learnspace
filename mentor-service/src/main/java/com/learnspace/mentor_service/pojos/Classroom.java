@@ -26,6 +26,6 @@ public class Classroom {
     @JoinColumn(name = "mentor_id")
     private User mentor;
 
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
 }

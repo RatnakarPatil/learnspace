@@ -2,7 +2,6 @@ package com.learnspace.learner_service.controllers;
 
 import com.learnspace.learner_service.dtos.ClassroomDTO;
 import com.learnspace.learner_service.dtos.FileDTO;
-import com.learnspace.learner_service.pojos.Classroom;
 import com.learnspace.learner_service.services.ClassroomService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,41 +22,78 @@ public class ClassroomController {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
 
         if (learnerUniqueId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");
         }
 
         try {
             String response = classroomService.joinClassroom(learnerUniqueId, classroomCode);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("/myClassrooms")
-    public ResponseEntity<List<ClassroomDTO>> getClassrooms(HttpSession session) {
+    public ResponseEntity<?> getClassrooms(HttpSession session) {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+
         if (learnerUniqueId == null) {
-            return ResponseEntity.status(401).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");
         }
-        return ResponseEntity.ok(classroomService.getClassroomsForLearner(learnerUniqueId));
+
+        try {
+            List<ClassroomDTO> classrooms = classroomService.getClassroomsForLearner(learnerUniqueId);
+            return ResponseEntity.ok(classrooms);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/classrooms/{classroomId}")
-    public ResponseEntity<ClassroomDTO> getClassroom(@PathVariable Long classroomId, HttpSession session) {
+    public ResponseEntity<?> getClassroom(@PathVariable Long classroomId, HttpSession session) {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+
         if (learnerUniqueId == null) {
-            return ResponseEntity.status(401).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");
         }
-        return ResponseEntity.ok(classroomService.getSpecifiedClassroom(learnerUniqueId, classroomId));
+
+        try {
+            ClassroomDTO dto = classroomService.getSpecifiedClassroom(learnerUniqueId, classroomId);
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/classrooms/{classroomId}/files")
-    public ResponseEntity<List<FileDTO>> getFiles(@PathVariable Long classroomId, HttpSession session) {
+    public ResponseEntity<?> getFiles(@PathVariable Long classroomId, HttpSession session) {
         Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+
         if (learnerUniqueId == null) {
-            return ResponseEntity.status(401).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");
         }
-        return ResponseEntity.ok(classroomService.getFilesForClassroomOfLearner(learnerUniqueId, classroomId));
+
+        try {
+            List<FileDTO> files = classroomService.getFilesForClassroomOfLearner(learnerUniqueId, classroomId);
+            return ResponseEntity.ok(files);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/leaveClassroom/{classroomId}")
+    public ResponseEntity<String> leaveClassroom(@PathVariable Long classroomId, HttpSession session) {
+        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+
+        if (learnerUniqueId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");
+        }
+
+        try {
+            String result = classroomService.leaveClassroom(learnerUniqueId, classroomId);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
 }

@@ -4,7 +4,8 @@ import com.learnspace.learner_service.dtos.ClassroomDTO;
 import com.learnspace.learner_service.dtos.FileDTO;
 import com.learnspace.learner_service.pojos.Classroom;
 import com.learnspace.learner_service.pojos.User;
-import com.learnspace.learner_service.repository.*;
+import com.learnspace.learner_service.repository.ClassroomRepo;
+import com.learnspace.learner_service.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,4 +116,24 @@ public class ClassroomService {
             return f;
         }).collect(Collectors.toList());
     }
+
+    public String leaveClassroom(Long learnerId, Long classroomId) {
+        User learner = userRepo.findById(learnerId)
+                .orElseThrow(() -> new RuntimeException("Learner not found"));
+
+        Classroom classroom = classroomRepo.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+
+        if (!learner.getClassrooms().contains(classroom)) {
+            throw new RuntimeException("Learner is not part of this classroom.");
+        }
+
+        learner.getClassrooms().remove(classroom);
+        classroom.getLearners().remove(learner);
+        userRepo.save(learner);
+
+        return "Successfully left the classroom.";
+    }
+
+
 }

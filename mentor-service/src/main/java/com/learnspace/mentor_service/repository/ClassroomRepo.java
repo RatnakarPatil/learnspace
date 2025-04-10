@@ -1,6 +1,5 @@
 package com.learnspace.mentor_service.repository;
 
-import com.learnspace.mentor_service.dtos.ClassroomDTO;
 import com.learnspace.mentor_service.pojos.Classroom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,5 +10,3 @@ public interface ClassroomRepo extends JpaRepository<Classroom, Long> {
 
     List<Classroom> findByMentorUserId(Long mentorId);
 }
-
-//List<ClassroomDTO> findByMentorUserId(Long mentorId);
