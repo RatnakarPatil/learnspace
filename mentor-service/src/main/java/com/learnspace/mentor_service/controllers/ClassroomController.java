@@ -18,7 +18,7 @@ public class ClassroomController {
 
     @PostMapping(path = "/createClassroom")
     public ResponseEntity<ClassroomDTO> createClassroom(@RequestParam String classroomName, HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
+        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId");
         if (mentorUniqueId == null) {
             return ResponseEntity.status(401).body(null);
         }
