@@ -9,5 +9,5 @@ public class FileDTO {
     private Long fileId;
     private String fileName;
     private String fileType;
-    private byte[] fileData;
+    private Long classroomId;
 }

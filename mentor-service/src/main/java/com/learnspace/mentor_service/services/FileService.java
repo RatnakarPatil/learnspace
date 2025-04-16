@@ -1,6 +1,7 @@
 package com.learnspace.mentor_service.services;
 
 import com.learnspace.mentor_service.dtos.FileDTO;
+import com.learnspace.mentor_service.dtos.FileDownloadDTO;
 import com.learnspace.mentor_service.pojos.Classroom;
 import com.learnspace.mentor_service.pojos.File;
 import com.learnspace.mentor_service.pojos.User;
@@ -8,6 +9,8 @@ import com.learnspace.mentor_service.repository.ClassroomRepo;
 import com.learnspace.mentor_service.repository.FileRepo;
 import com.learnspace.mentor_service.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,11 +68,13 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
-    public byte[] downloadFile(Long fileId) {
+    public FileDownloadDTO downloadFile(Long fileId) {
         File file = fileRepo.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("File not found"));
-        return file.getFileData();
+        Resource resource = new ByteArrayResource(file.getFileData());
+        return new FileDownloadDTO(file.getFileName(), file.getFileType(), resource);
     }
+
 
     public void deleteFile(Long fileId) {
         if (!fileRepo.existsById(fileId)) {

@@ -1,6 +1,7 @@
 package com.learnspace.mentor_service.controllers;
 
 import com.learnspace.mentor_service.dtos.FileDTO;
+import com.learnspace.mentor_service.dtos.FileDownloadDTO;
 import com.learnspace.mentor_service.services.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,14 +55,13 @@ public class FileController {
     @ApiResponse(responseCode = "200", description = "File downloaded successfully",
             content = @Content(mediaType = "application/octet-stream"))
     @GetMapping("/download/{fileId}")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable Long fileId) {
-        byte[] data = fileService.downloadFile(fileId);
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
+        FileDownloadDTO fileDownload = fileService.downloadFile(fileId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDisposition(ContentDisposition.attachment().filename("file").build());
-
-        return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDownload.getFileName() + "\"")
+                .contentType(MediaType.parseMediaType(fileDownload.getContentType()))
+                .body(fileDownload.getResource());
     }
 
     @Operation(summary = "Delete a file by ID")
