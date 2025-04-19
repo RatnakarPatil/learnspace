@@ -1,4 +1,4 @@
-package com.learnspace.learner_service.pojos;
+package com.learnspace.auth_service.dtos;
 
 import lombok.Data;
 

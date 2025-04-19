@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -32,4 +32,8 @@ public class Question {
     @ManyToOne  // ✅ Changed from `createdBy` as String to reference `User`
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    private int currentCycleDay; // 1, 3, 7, 15, 30 (next stage in cycle)
+    private LocalDate nextRevisionDate; // When to show next time
+    private boolean isActive = true; // false = fully learned, stop showing
 }
