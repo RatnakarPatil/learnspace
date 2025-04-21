@@ -35,8 +35,14 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         User user = authService.login(request.getEmail(), request.getPassword(), request.getRole());
         if (user != null) {
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("role", user.getRole().name());
+
+            if (user.getRole().name().equals("MENTOR")) {
+                session.setAttribute("mentorUniqueId", user.getUserId()); // ✅ used in mentor-service
+            }
+
+            if (user.getRole().name().equals("LEARNER")) {
+                session.setAttribute("learnerUniqueId", user.getUserId()); // ✅ used in learner-service
+            }
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
@@ -49,6 +55,7 @@ public class AuthController {
                     .body(Collections.singletonMap("message", "Invalid credentials or role mismatch"));
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
