@@ -17,12 +17,6 @@ if "%1"=="build_start" (
     timeout /t 20
     cd ..
 
-    :: Start Auth Service
-    echo Starting Auth Service...
-    cd auth-service
-    start cmd /k "mvn clean install && mvn spring-boot:run"
-    cd ..
-
     :: Start Learner Service
     echo Starting Learner Service...
     cd learner-service

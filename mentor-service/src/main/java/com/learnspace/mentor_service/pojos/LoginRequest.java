@@ -6,4 +6,5 @@ import lombok.Data;
 public class LoginRequest {
     private String email;   // ✅ Changed `mentorEmail` to generic `email`
     private String password;  // ✅ Changed `mentorPassword` to `password`
+    private String role;
 }
