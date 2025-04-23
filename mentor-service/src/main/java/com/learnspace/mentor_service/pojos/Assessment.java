@@ -22,6 +22,8 @@ public class Assessment {
     private String assessmentTitle;
     private Date createdAt;
     private boolean isActive;
+    private long totalMarks;
+    private long obtainedMarks;
 
     // Many assessments belong to one user (Learner/Mentor)
     @ManyToOne

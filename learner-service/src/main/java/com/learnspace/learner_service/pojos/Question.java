@@ -35,5 +35,5 @@ public class Question {
 
     private int currentCycleDay; // 1, 3, 7, 15, 30 (next stage in cycle)
     private LocalDate nextRevisionDate; // When to show next time
-    private boolean isActive = true; // false = fully learned, stop showing
+    private boolean isActive; // false = fully learned, stop showing
 }
