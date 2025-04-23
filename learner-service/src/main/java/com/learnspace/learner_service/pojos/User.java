@@ -44,4 +44,7 @@ public class User {
     // A user (learner/mentor) can create multiple assessments
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assessment> assessments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "learner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notes> notes;
 }
