@@ -6,18 +6,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 @Configuration
 public class CorsGlobalConfiguration {
 
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
         config.setAllowCredentials(false);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
+        config.setMaxAge(3600L); // optional for better performance
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -25,3 +24,4 @@ public class CorsGlobalConfiguration {
         return new CorsWebFilter(source);
     }
 }
+

@@ -49,9 +49,10 @@ public class QuestionController {
         return ResponseEntity.ok("Attempt recorded.");
     }
 
+    @CrossOrigin(origins = "*")
     @Operation(summary = "Get today's revision questions", description = "Fetches all questions due for revision today.")
     @ApiResponse(responseCode = "200", description = "List of due questions")
-    @GetMapping("/due-today")
+    @GetMapping("/dueToday")
     public ResponseEntity<List<QuestionDTO>> getToday(@RequestParam Long userId) {
         return ResponseEntity.ok(questionService.getDueQuestions(userId));
     }
