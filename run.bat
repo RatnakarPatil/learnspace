@@ -17,16 +17,18 @@ if "%1"=="build_start" (
     timeout /t 20
     cd ..
 
-    :: Start Learner Service
-    echo Starting Learner Service...
-    cd learner-service
-    start cmd /k "mvn clean install && mvn spring-boot:run"
-    cd ..
-
     :: Start Mentor Service
     echo Starting Mentor Service...
     cd mentor-service
     start cmd /k "mvn clean install && mvn spring-boot:run"
+    timeout /t 20
+    cd ..
+
+    :: Start Learner Service
+    echo Starting Learner Service...
+    cd learner-service
+    start cmd /k "mvn clean install && mvn spring-boot:run"
+    timeout /t 20
     cd ..
 
     echo All services started successfully!

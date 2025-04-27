@@ -1,5 +1,6 @@
 package com.learnspace.mentor_service.controllers;
 
+import com.learnspace.mentor_service.dtos.AssessmentDTO;
 import com.learnspace.mentor_service.dtos.AssessmentRequestDTO;
 import com.learnspace.mentor_service.pojos.Assessment;
 import com.learnspace.mentor_service.services.AssessmentService;
@@ -48,7 +49,7 @@ public class AssessmentController {
             @ApiResponse(responseCode = "404", description = "Classroom not found")
     })
     @GetMapping("/classroom/{classroomId}")
-    public ResponseEntity<List<Assessment>> getClassroomAssessments(
+    public ResponseEntity<List<AssessmentDTO>> getClassroomAssessments(
             @Parameter(description = "ID of the classroom", required = true)
             @PathVariable Long classroomId
     ) {

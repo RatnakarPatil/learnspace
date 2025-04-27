@@ -23,9 +23,12 @@ public class Classroom {
     private String classroomCode;
 
     @ManyToOne
-    @JoinColumn(name = "mentor_id")
+    @JoinColumn(name = "mentor_id", nullable = false)
     private User mentor;
 
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
+    private List<Assessment> assessments; // One classroom can have multiple assessments
 }

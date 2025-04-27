@@ -27,12 +27,17 @@ public class Assessment {
 
     // Many assessments belong to one user (Learner/Mentor)
     @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "userId", nullable = false)
     private User createdBy; // ✅ Created by a mentor
 
     // An assessment contains multiple questions
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
+
+    // Many assessments belong to one classroom
+    @ManyToOne
+    @JoinColumn(name = "classroom_id", nullable = false)
+    private Classroom classroom; // Classroom associated with the assessment
 }
 
 
