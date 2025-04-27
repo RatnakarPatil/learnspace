@@ -1,5 +1,6 @@
 package com.learnspace.learner_service.controllers;
 
+import com.learnspace.learner_service.dtos.QuestionDTO;
 import com.learnspace.learner_service.dtos.QuestionListDTO;
 import com.learnspace.learner_service.pojos.Question;
 import com.learnspace.learner_service.services.QuestionService;
@@ -36,13 +37,6 @@ public class QuestionController {
         return ResponseEntity.ok("Questions saved successfully.");
     }
 
-    @Operation(summary = "Get today's revision questions", description = "Fetches all questions due for revision today.")
-    @ApiResponse(responseCode = "200", description = "List of due questions")
-    @GetMapping("/due-today")
-    public ResponseEntity<List<Question>> getToday() {
-        return ResponseEntity.ok(questionService.getDueQuestions());
-    }
-
     @Operation(summary = "Record question attempt", description = "Updates question status based on whether the answer was correct.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Attempt recorded"),
@@ -56,11 +50,20 @@ public class QuestionController {
         return ResponseEntity.ok("Attempt recorded.");
     }
 
+    @Operation(summary = "Get today's revision questions", description = "Fetches all questions due for revision today.")
+    @ApiResponse(responseCode = "200", description = "List of due questions")
+    @GetMapping("/due-today")
+    public ResponseEntity<List<QuestionDTO>> getToday(HttpSession session) {
+        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+        return ResponseEntity.ok(questionService.getDueQuestions(learnerUniqueId));
+    }
+
     @Operation(summary = "Get all questions", description = "Returns all questions (active and inactive).")
     @ApiResponse(responseCode = "200", description = "All questions fetched")
     @GetMapping("/all")
-    public ResponseEntity<List<Question>> getAll() {
-        return ResponseEntity.ok(questionService.listAllQuestions());
+    public ResponseEntity<List<QuestionDTO>> getAll(HttpSession session) {
+        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+        return ResponseEntity.ok(questionService.listAllQuestions(learnerUniqueId));
     }
 
     @Operation(summary = "Delete a question", description = "Deletes a question by its ID.")

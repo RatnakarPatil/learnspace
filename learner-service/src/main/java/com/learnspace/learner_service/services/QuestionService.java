@@ -45,9 +45,15 @@ public class QuestionService {
     }
 
     // 2. Get questions due today
-    public List<Question> getDueQuestions() {
-        return questionRepo.findByNextRevisionDateAndIsActive(LocalDate.now(), true);
+    public List<QuestionDTO> getDueQuestions(Long learnerId) {
+        List<Question> questions = questionRepo.findByCreatedByUserIdAndNextRevisionDateAndIsActive(
+                learnerId, LocalDate.now(), true);
+
+        return questions.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
+
 
     // 3. Record an attempt and update revision
     public void recordAttempt(Long questionId, boolean isCorrect) {
@@ -80,8 +86,22 @@ public class QuestionService {
     }
 
     // 4. List all active/inactive questions
-    public List<Question> listAllQuestions() {
-        return questionRepo.findAll();
+    public List<QuestionDTO> listAllQuestions(Long learnerId) {
+        List<Question> questions = questionRepo.findByCreatedByUserId(learnerId);
+        return questions.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private QuestionDTO convertToDTO(Question question) {
+        QuestionDTO dto = new QuestionDTO();
+        dto.setQuestionText(question.getQuestionText());
+        dto.setOption1(question.getOption1());
+        dto.setOption2(question.getOption2());
+        dto.setOption3(question.getOption3());
+        dto.setOption4(question.getOption4());
+        dto.setCorrectOption(question.getCorrectOption());
+        return dto;
     }
 
     // 5. Delete question
