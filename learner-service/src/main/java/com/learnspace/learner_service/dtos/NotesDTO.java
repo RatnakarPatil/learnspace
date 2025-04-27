@@ -11,8 +11,5 @@ import java.util.List;
 public class NotesDTO {
     private Long noteId;
     private String title;
-    private Long learnerId;
     private List<SubNotesDTO> subNotes;
 }
-
-

@@ -23,8 +23,9 @@ public class NotesController {
     @Operation(summary = "Save new note", description = "Save a new note with a list of sub-notes for a learner")
     @ApiResponse(responseCode = "200", description = "Note created successfully")
     @PostMapping
-    public ResponseEntity<NotesDTO> saveNote(@RequestBody NotesDTO dto) {
-        return ResponseEntity.ok(notesService.saveNote(dto));
+    public ResponseEntity<NotesDTO> saveNote(@RequestBody NotesDTO dto, HttpSession session) {
+        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
+        return ResponseEntity.ok(notesService.saveNote(dto, learnerUniqueId));
     }
 
     @Operation(summary = "Update an existing note", description = "Updates the note and its sub-notes by ID")

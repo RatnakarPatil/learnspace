@@ -21,8 +21,8 @@ public class NotesService {
     private final NotesRepo notesRepo;
     private final UserRepo userRepo;
 
-    public NotesDTO saveNote(NotesDTO dto) {
-        User learner = userRepo.findById(dto.getLearnerId())
+    public NotesDTO saveNote(NotesDTO dto, Long learnerId) {
+        User learner = userRepo.findById(learnerId)
                 .orElseThrow(() -> new RuntimeException("Learner not found"));
 
         Notes notes = Notes.builder()
@@ -88,7 +88,6 @@ public class NotesService {
         return NotesDTO.builder()
                 .noteId(notes.getNoteId())
                 .title(notes.getTitle())
-                .learnerId(notes.getLearner().getUserId())
                 .subNotes(notes.getSubNotes().stream()
                         .map(sn -> new SubNotesDTO(sn.getSubTopic(), sn.getSummary()))
                         .collect(Collectors.toList()))
