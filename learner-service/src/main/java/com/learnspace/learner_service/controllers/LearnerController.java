@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class LearnerController {
@@ -17,17 +21,20 @@ public class LearnerController {
     private LearnerService learnerService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> doSignup(@RequestBody User learner) {
-        boolean result = learnerService.signup(learner);
-        if (result) {
-            return ResponseEntity.ok("Signup Successful");
+    public ResponseEntity<?> doSignup(@RequestBody User learner) {
+        User savedUser = learnerService.signup(learner);
+        if (savedUser != null) {
+            return ResponseEntity.ok(Map.of(
+                    "userId", savedUser.getUserId(), // Assuming mentor object has userId
+                    "role", savedUser.getRole() // Assuming mentor object has role
+            ));
         } else {
-            return ResponseEntity.badRequest().body("Signup Failed: Email already in use");
+            return ResponseEntity.badRequest().body(Map.of("message", "Signup Failed: Email already in use"));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> doLogin(@RequestBody LoginRequest loginRequest, HttpSession session) {
+    public ResponseEntity<?> doLogin(@RequestBody LoginRequest loginRequest) {
         String loginStatus = learnerService.login(
                 loginRequest.getEmail(),
                 loginRequest.getPassword(),
@@ -36,16 +43,21 @@ public class LearnerController {
 
         if (loginStatus.equals("SUCCESS")) {
             long learnerId = learnerService.getUserId(loginRequest.getEmail());
-            session.setAttribute("learnerUniqueId", learnerId);
-            return ResponseEntity.ok().body("{\"message\": \"Login Successful\", \"learnerId\": " + learnerId + "}");
+            String role = loginRequest.getRole();
+            return ResponseEntity.ok(Map.of(
+                    "message", "Login Successful",
+                    "userId", learnerId,
+                    "role", role
+            ));
         } else {
-            return ResponseEntity.status(401).body("{\"message\": \"" + loginStatus + "\"}");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Invalid credentials", loginStatus);
+            return ResponseEntity.status(401).body(errorResponse);
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok("Logged out successfully");
+    public ResponseEntity<String> logout(@RequestParam Long userId) {
+        return ResponseEntity.ok("Logged out successfully for userId: " + userId);
     }
 }

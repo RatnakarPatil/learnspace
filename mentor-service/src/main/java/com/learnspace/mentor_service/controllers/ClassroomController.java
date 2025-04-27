@@ -2,7 +2,6 @@ package com.learnspace.mentor_service.controllers;
 
 import com.learnspace.mentor_service.dtos.ClassroomDTO;
 import com.learnspace.mentor_service.services.ClassroomService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,47 +16,42 @@ public class ClassroomController {
     private ClassroomService classroomService;
 
     @PostMapping(path = "/createClassroom")
-    public ResponseEntity<ClassroomDTO> createClassroom(@RequestParam String classroomName, HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId");
-        if (mentorUniqueId == null) {
+    public ResponseEntity<ClassroomDTO> createClassroom(@RequestParam Long userId, @RequestParam String classroomName) {
+        if (userId == null) {
             return ResponseEntity.status(401).body(null);
         }
-        ClassroomDTO classroomDTO = classroomService.createClassroom(mentorUniqueId, classroomName); // Use DTO
+        ClassroomDTO classroomDTO = classroomService.createClassroom(userId, classroomName); // Use DTO
         return ResponseEntity.ok(classroomDTO);
     }
 
     @GetMapping("/myClassrooms")
-    public ResponseEntity<List<ClassroomDTO>> getClassrooms(HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
-        if (mentorUniqueId == null) {
+    public ResponseEntity<List<ClassroomDTO>> getClassrooms(@RequestParam Long userId) {
+        if (userId == null) {
             return ResponseEntity.status(401).body(null);
         }
-        return ResponseEntity.ok(classroomService.getMentorClassrooms(mentorUniqueId));
+        return ResponseEntity.ok(classroomService.getMentorClassrooms(userId));
     }
 
     @GetMapping("/classrooms/{classroomId}")
-    public ResponseEntity<?> getClassroom(@PathVariable Long classroomId, HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId"); // Retrieve from session
-        if (mentorUniqueId == null) {
+    public ResponseEntity<?> getClassroom(@RequestParam Long userId, @PathVariable Long classroomId) {
+        if (userId == null) {
             return ResponseEntity.status(401).body("Unauthorized: Please login as mentor.");
         }
         try {
-            ClassroomDTO classroom = classroomService.getSpecifiedClassroom(mentorUniqueId, classroomId);
+            ClassroomDTO classroom = classroomService.getSpecifiedClassroom(userId, classroomId);
             return ResponseEntity.ok(classroom);
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // or 403 for forbidden
         }
     }
 
-
     @DeleteMapping("/deleteClassroom/{classroomId}")
-    public ResponseEntity<String> deleteClassroom(@PathVariable Long classroomId, HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId");
-        if (mentorUniqueId == null) {
+    public ResponseEntity<String> deleteClassroom(@RequestParam Long userId, @RequestParam Long classroomId) {
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mentor not logged in.");
         }
         try {
-            classroomService.deleteClassroom(mentorUniqueId, classroomId);
+            classroomService.deleteClassroom(userId, classroomId);
             return ResponseEntity.ok("Classroom deleted successfully.");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -66,15 +60,14 @@ public class ClassroomController {
 
     @PutMapping("/updateClassroom/{classroomId}")
     public ResponseEntity<?> updateClassroom(
-            @PathVariable Long classroomId,
-            @RequestParam String newName,
-            HttpSession session) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId");
-        if (mentorUniqueId == null) {
+            @RequestParam Long userId,
+            @RequestParam Long classroomId,
+            @RequestParam String newName) {
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mentor not logged in.");
         }
         try {
-            ClassroomDTO updated = classroomService.updateClassroom(mentorUniqueId, classroomId, newName);
+            ClassroomDTO updated = classroomService.updateClassroom(userId, classroomId, newName);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

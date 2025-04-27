@@ -17,13 +17,13 @@ public class LearnerService {
         return (user != null) ? user.getUserId() : -1;
     }
 
-    public boolean signup(User user) {
+    public User signup(User user) {
         if (userRepo.findByEmail(user.getEmail()) != null) {
-            return false;  // User already exists
+            return null;  // User already exists
         }
-        userRepo.save(user);
-        return true;
+        return userRepo.save(user); // ✅ Save and return the saved User
     }
+
 
     public String login(String email, String password, String role) {
         User user = userRepo.findByEmail(email);

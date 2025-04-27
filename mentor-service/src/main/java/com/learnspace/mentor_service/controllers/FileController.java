@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -31,15 +30,14 @@ public class FileController {
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content)
     })
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("classroomId") Long classroomId,
-                                        @RequestParam("file") MultipartFile file,
-                                        HttpSession session) {
-        Long uploadedById = (Long) session.getAttribute("mentorUniqueId");
-        if (uploadedById == null) {
+    public ResponseEntity<?> uploadFile(@RequestParam Long userId,
+                                        @RequestParam("classroomId") Long classroomId,
+                                        @RequestParam("file") MultipartFile file) {
+        if (userId == null) {
             return ResponseEntity.status(401).body("Unauthorized: Please login as mentor");
         }
 
-        FileDTO fileDTO = fileService.uploadFile(classroomId, uploadedById, file);
+        FileDTO fileDTO = fileService.uploadFile(classroomId, userId, file);
         return ResponseEntity.ok(fileDTO);
     }
 

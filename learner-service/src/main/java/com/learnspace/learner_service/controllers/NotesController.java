@@ -23,9 +23,8 @@ public class NotesController {
     @Operation(summary = "Save new note", description = "Save a new note with a list of sub-notes for a learner")
     @ApiResponse(responseCode = "200", description = "Note created successfully")
     @PostMapping
-    public ResponseEntity<NotesDTO> saveNote(@RequestBody NotesDTO dto, HttpSession session) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        return ResponseEntity.ok(notesService.saveNote(dto, learnerUniqueId));
+    public ResponseEntity<NotesDTO> saveNote(@RequestParam Long userId, @RequestBody NotesDTO dto) {
+        return ResponseEntity.ok(notesService.saveNote(dto, userId));
     }
 
     @Operation(summary = "Update an existing note", description = "Updates the note and its sub-notes by ID")
@@ -53,9 +52,8 @@ public class NotesController {
     @Operation(summary = "Get all notes by learner", description = "Retrieves all notes created by a learner")
     @ApiResponse(responseCode = "200", description = "Notes retrieved successfully")
     @GetMapping("/learnerNotes")
-    public ResponseEntity<List<NotesDTO>> getNotesByLearner(HttpSession session) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        return ResponseEntity.ok(notesService.getAllNotesByLearner(learnerUniqueId));
+    public ResponseEntity<List<NotesDTO>> getNotesByLearner(@RequestParam Long userId) {
+        return ResponseEntity.ok(notesService.getAllNotesByLearner(userId));
     }
 }
 

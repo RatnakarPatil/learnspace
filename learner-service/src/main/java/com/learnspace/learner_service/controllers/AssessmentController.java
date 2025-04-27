@@ -46,9 +46,8 @@ public class AssessmentController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Assessment>> getAll(
-            HttpSession session
+            @RequestParam Long userId
     ) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        return ResponseEntity.ok(assessmentService.getAssessmentsForLearner(learnerUniqueId));
+        return ResponseEntity.ok(assessmentService.getAssessmentsForLearner(userId));
     }
 }

@@ -30,10 +30,9 @@ public class QuestionController {
     })
     @PostMapping("/saveBulk")
     public ResponseEntity<?> saveBulk(
-            @RequestBody QuestionListDTO request,
-            HttpSession session) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        questionService.saveQuestions(request.getMcqQuestions(), learnerUniqueId);
+            @RequestParam Long userId,
+            @RequestBody QuestionListDTO request) {
+        questionService.saveQuestions(request.getMcqQuestions(), userId);
         return ResponseEntity.ok("Questions saved successfully.");
     }
 
@@ -53,17 +52,15 @@ public class QuestionController {
     @Operation(summary = "Get today's revision questions", description = "Fetches all questions due for revision today.")
     @ApiResponse(responseCode = "200", description = "List of due questions")
     @GetMapping("/due-today")
-    public ResponseEntity<List<QuestionDTO>> getToday(HttpSession session) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        return ResponseEntity.ok(questionService.getDueQuestions(learnerUniqueId));
+    public ResponseEntity<List<QuestionDTO>> getToday(@RequestParam Long userId) {
+        return ResponseEntity.ok(questionService.getDueQuestions(userId));
     }
 
     @Operation(summary = "Get all questions", description = "Returns all questions (active and inactive).")
     @ApiResponse(responseCode = "200", description = "All questions fetched")
     @GetMapping("/all")
-    public ResponseEntity<List<QuestionDTO>> getAll(HttpSession session) {
-        Long learnerUniqueId = (Long) session.getAttribute("learnerUniqueId");
-        return ResponseEntity.ok(questionService.listAllQuestions(learnerUniqueId));
+    public ResponseEntity<List<QuestionDTO>> getAll(@RequestParam Long userId) {
+        return ResponseEntity.ok(questionService.listAllQuestions(userId));
     }
 
     @Operation(summary = "Delete a question", description = "Deletes a question by its ID.")

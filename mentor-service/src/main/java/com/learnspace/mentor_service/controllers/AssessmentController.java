@@ -2,13 +2,11 @@ package com.learnspace.mentor_service.controllers;
 
 import com.learnspace.mentor_service.dtos.AssessmentDTO;
 import com.learnspace.mentor_service.dtos.AssessmentRequestDTO;
-import com.learnspace.mentor_service.pojos.Assessment;
 import com.learnspace.mentor_service.services.AssessmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +31,10 @@ public class AssessmentController {
     })
     @PostMapping("/generate")
     public ResponseEntity<?> generateAssessment(
-            @RequestBody AssessmentRequestDTO dto,
-            HttpSession session
+            @RequestParam Long userId,
+            @RequestBody AssessmentRequestDTO dto
     ) {
-        Long mentorUniqueId = (Long) session.getAttribute("mentorUniqueId");
-        return ResponseEntity.ok(assessmentService.createAssessmentFromAI(dto, mentorUniqueId));
+        return ResponseEntity.ok(assessmentService.createAssessmentFromAI(dto, userId));
     }
 
     @Operation(
@@ -51,7 +48,7 @@ public class AssessmentController {
     @GetMapping("/classroom/{classroomId}")
     public ResponseEntity<List<AssessmentDTO>> getClassroomAssessments(
             @Parameter(description = "ID of the classroom", required = true)
-            @PathVariable Long classroomId
+            @RequestParam Long classroomId
     ) {
         return ResponseEntity.ok(assessmentService.getAssessmentsForClassroom(classroomId));
     }
