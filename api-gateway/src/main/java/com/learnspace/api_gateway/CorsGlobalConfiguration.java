@@ -13,7 +13,7 @@ public class CorsGlobalConfiguration {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOriginPattern("*");
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setMaxAge(3600L); // optional for better performance
@@ -24,4 +24,3 @@ public class CorsGlobalConfiguration {
         return new CorsWebFilter(source);
     }
 }
-

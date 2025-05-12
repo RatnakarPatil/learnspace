@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ClassroomController {
@@ -17,7 +18,7 @@ public class ClassroomController {
     @Autowired
     private ClassroomService classroomService;
 
-    @PostMapping("/joinClassroom/{classroomCode}")
+    @PostMapping("/joinClassroom")
     public ResponseEntity<String> joinClassroom(
             @RequestParam Long userId,
             @RequestParam String classroomCode) {
@@ -76,7 +77,7 @@ public class ClassroomController {
         }
     }
 
-    @DeleteMapping("/leaveClassroom/{classroomId}")
+    @DeleteMapping("/leaveClassroom")
     public ResponseEntity<String> leaveClassroom(@RequestParam Long userId, @RequestParam Long classroomId) {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Learner not logged in.");

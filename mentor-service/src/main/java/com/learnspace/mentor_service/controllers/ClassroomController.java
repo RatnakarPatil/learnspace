@@ -45,7 +45,7 @@ public class ClassroomController {
         }
     }
 
-    @DeleteMapping("/deleteClassroom/{classroomId}")
+    @DeleteMapping("/deleteClassroom")
     public ResponseEntity<String> deleteClassroom(@RequestParam Long userId, @RequestParam Long classroomId) {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mentor not logged in.");
